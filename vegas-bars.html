@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=utf-8 />
+    <title></title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300&family=Rancho&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #222;
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 100%;
+            color: #ddd;
+        }
+
+        header {
+            width: 80%;
+            margin: 10px auto 10px auto;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            background: rgba(63, 63, 63, 0.9);
+        }
+
+        footer {
+            padding: 6px 10%;
+            width: 80%;
+        }
+
+        p {
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 1em;
+            color: #fff;
+        }
+
+        a {
+            color: #004A8B;
+        }
+
+        a:hover {
+            color: rgb(67, 69, 71);
+            text-decoration: none;
+        }
+
+        #info-button {
+            padding: 8px 5px;
+            font-family: 'Rancho', cursive;
+            font-size: 1em;
+            font-weight: bolder;
+            border: 2px solid rgba(244, 244, 244, 0.2);
+            background: rgba(35, 35, 35, 0.95);
+            color: #00FFFF;
+            border-radius: 5px;
+            position: fixed;
+            top: 11px;
+            right: 11px;
+            z-index: 9999;
+            cursor: pointer;
+        }
+
+        #information {
+            width: 90vw;        
+            background: rgba(35, 35, 35, 0.9);
+            color: rgba(244, 244, 244, 0.8);
+            border: 2px solid rgba(244, 244, 244, 0.2);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            height: 0;
+            padding: 20px 0px 0px 20px;
+            z-index: 9000;
+            position: absolute;
+            bottom: -25px;
+            left: 4vw;
+            overflow: scroll;
+        }
+
+
+        #information div {
+            padding: 10px;
+        }
+
+        #information h1 {
+            font-family: 'Rancho', cursive;
+            font-size: 2em;
+            color: #FF0000;
+            margin: 0 0 5px 0;
+        }
+
+        #information a {
+            color: #00FFFF;
+        }
+
+        #information p {
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 1em;
+            color: #fff;
+        }
+
+        #information a:hover {
+            color: #00FF00;
+            text-decoration: none;
+        }
+
+        .legend {
+            padding: 6px 8px;
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 1em;
+            border: 2px solid rgba(244, 244, 244, 0.2);
+            background: rgba(35, 35, 35, 0.95);
+            color: #fff;
+            border-radius: 5px;
+        }
+
+        .legend h3 {
+            font-family: 'Rancho', cursive;
+            font-size: 1.5em;
+            font-weight: bolder;
+            color: #00FFFF;
+            margin: 0 0 10px 0;
+        }
+
+        .legend span {
+            width: 20px;
+            height: 20px;
+            float: left;
+            margin: 0 10px 4px 0;
+        }
+
+        .legend label {
+            font-size: 1.1em;
+        }
+
+        .legend label:after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+
+        .leaflet-popup-content {
+            font-family: 'Fira Sans', sans-serif;
+			font-size: 1em;
+            color: #00FF00;
+            border: 0px;
+            background: rgba(35, 35, 35, 0.95);
+        }
+
+        .leaflet-bar a {
+            background: rgba(100, 100, 100, 0.95);
+            color: rgba(244, 244, 244, 0.8);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id='map'></div>
+    <button id="info-button" onclick="myInfo()">Information</button>
+    <div id='information'>
+            <h1>Questionable Cocktails</h1>
+            <p> Las Vegas area bars displayed by number of demerits on their most recent health inspection. Data includes locations classified as a 'Bar / Tavern' in the City of Las Vegas' <a href=https://opendataportal-lasvegas.opendata.arcgis.com/datasets/restaurant-inspections-open-data/explore>Restaurant Inspection</a> Open Dataset, updated on 17 Mar. 2022.<br><br>Map created by <a href="https://github.com/jacographer">Jacob Saindon</a> for New Maps Plus GEO672, Spring 2022 (23 Mar. 2022).</p>
+        </div>
+    </div>
+
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+    <script src="../data/barsData.js"></script>
+    <script src='https://unpkg.com/simple-statistics@7.6.0/dist/simple-statistics.min.js'></script>
+    <script>
+        const map = L.map('map').setView([36.12, -115.1574], 13);
+        let clicked = false
+
+        //// add basemap
+        const basemap = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+            subdomains: 'abcd',
+            minZoom: 11,
+            maxZoom: 18,
+            opacity: 0.75,
+        }).addTo(map);
+
+console.log(bars)
+console.log(bars.features[3].properties["BarName"].includes("DELETED"))
+        //// create styled layers
+        const barsLayer = L.geoJson(bars, {
+            pointToLayer: function (feature, latlng) {
+                return L.circleMarker(latlng, {
+                    color: null,
+                    fillColor: "#000",
+                    fillOpacity: 1,
+                    radius: 5
+                })
+            },
+
+        //// why isn't this filter working??
+            filter: function (feature) {
+                if (feature.properties["BarName"].includes("DELETED") == false || feature.properties["BarName"].includes("Deleted") == false || feature.properties["BarName"].includes("DELETE") == false || feature.properties["BarName"].includes("Delete") == false || feature.properties.Demerits != null) {
+                    return feature;
+                }
+            },
+            onEachFeature: function (feature, layer) {
+                layer.on('mouseover', function () {
+                    layer.setStyle({
+                        radius: 11
+                    })
+                })
+                layer.on('mouseout', function () {
+                    layer.setStyle({
+                        radius: 5
+                    });
+                })
+            }
+        }).addTo(map);
+        drawMap(barsLayer);
+
+        //// classify the map, initialize tooltip, draw legend
+        function drawMap(barsLayer) {
+            var breaks = getClassBreaks(barsLayer);
+            barsLayer.eachLayer(function (layer) {
+                layer.setStyle({
+                    fillColor: getColor(layer.feature.properties["Demerits"], breaks)
+                });
+                var toolTipInfo =
+                    `<b>${layer.feature.properties["BarName"]}</b><br><i>${layer.feature.properties["Address"]}</i><br>Demerits: ${layer.feature.properties["Demerits"]}`;
+                if (L.Browser.mobile) {
+                    layer.bindPopup(toolTipInfo,{
+                        className: 'leaflet-popup-content'
+                    });
+                } else {
+                    layer.bindTooltip(toolTipInfo, {
+                        sticky: true,
+                        className: 'leaflet-popup-content'
+                    });
+                }
+            })
+            drawLegend(breaks);
+        }
+
+        //// define 3-class ckmeans classification
+        function getClassBreaks(barsLayer) {
+            var values = [];
+            barsLayer.eachLayer(function (layer) {
+                var value = parseInt(layer.feature.properties["Demerits"]);
+                if (layer.feature.properties["Demerits"] != null && layer.feature.properties["Demerits"] != 0 && layer.feature.properties["Demerits"] != 49 && layer.feature.properties["BarName"].includes("DELETE") == false)
+                    values.push(value);
+            });
+            var clusters = ss.ckmeans(values, 3);
+            var breaks = clusters.map(function (cluster) {
+                return [cluster[0], cluster.pop()];
+            });
+            return breaks;
+        }
+
+        //// set colors for classifications 
+        function getColor(n, breaks) {
+            if (n == 0) {
+                return '#1a9850';
+            } else if (n <= breaks[0][1]) {
+                return '#d9ef8b';
+            } else if (n <= breaks[1][1]) {
+                return '#fee08b';
+            } else if (n <= breaks[2][1]) {
+                return '#fc8d59';
+            } else if (n == 49) {
+                return '#d73027'
+            } else if (n == null) {
+                return '#000'
+            }
+        };
+
+        //// define legend and placement 
+        function drawLegend(breaks) {
+            var legend = L.control({
+                position: 'bottomright'
+            });
+            legend.onAdd = function () {
+                var div = L.DomUtil.create('div', 'legend');
+                div.innerHTML = `<h3>Las Vegas Bars & Health Inspection Demerits</h3>`
+                div.innerHTML += `<span style="background:#1a9850"></span><label>0`
+                for (var i = 0; i < breaks.length; i++) {
+                    var color = getColor(breaks[i][0], breaks);
+                    div.innerHTML += `<span style="background:${color}"></span><label>${breaks[i][0]} &ndash; ${breaks[i][1]}</label>`;
+                };
+                div.innerHTML += `<span style="background:#d73027"></span><label>49`;
+                return div;
+            };
+            legend.addTo(map);
+        }
+
+        //// create highlight object
+        var selector = L.circle([0, 0], 1000, {
+            fillColor: 'white',
+            fillOpacity: 0,
+            color: null,
+            opacity: null,
+            stroke: false,
+            interactive: false
+        });
+
+        //// highlight click functionality
+        // map.on('click', function (e) {
+        //     selector.setLatLng(e.latlng).addTo(map);
+        //         for (var layer in barsLayer) {
+        //             barsLayer[layer].eachLayer(function (layer) {
+        //             var distance = e.latlng.distanceTo(layer.getLatLng()) / 1000;
+        //             if (distance > 1) {
+        //                 layer.setStyle({
+        //                 fillOpacity: 0.1,
+        //                 });
+        //             } else {
+        //                 layer.setStyle({
+        //                 fill: true,
+        //                 fillOpacity: 1,
+        //                 });
+        //             }
+        //             })
+        //         }
+        //     });
+
+        //// toggle information button content
+        function myInfo() {
+            const x = document.getElementById('information');
+            const y = document.getElementById('info-button');
+            if (clicked) {
+                y.style.background = 'rgba(35, 35, 35, 0.95)';
+                x.style.height = '0px';
+            } else {
+                y.style.background = '#FF0000'
+                x.style.height = '33vh';
+            }
+            clicked = !clicked
+        }
+    </script>
+
+</body>
+
+</html>
