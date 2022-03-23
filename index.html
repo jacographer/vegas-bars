@@ -185,16 +185,16 @@
         let clicked = false
 
         //// add basemap
-        const basemap = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+        const basemap = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
             subdomains: 'abcd',
             minZoom: 11,
             maxZoom: 18,
-            opacity: 0.75,
+            opacity: 1,
         }).addTo(map);
 
-console.log(bars)
-console.log(bars.features[3].properties["BarName"].includes("DELETED"))
+// console.log(bars)
+// console.log(bars.features[3].properties["BarName"].includes("DELETED"))
         //// create styled layers
         const barsLayer = L.geoJson(bars, {
             pointToLayer: function (feature, latlng) {
