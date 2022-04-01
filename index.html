@@ -13,6 +13,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300&family=Rancho&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@latest/dist/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@latest/dist/MarkerCluster.css">
 
     <style>
         body {
@@ -186,6 +188,7 @@
         crossorigin=""></script>
     <script src="barsData.js"></script>
     <script src='https://unpkg.com/simple-statistics@7.6.0/dist/simple-statistics.min.js'></script>
+    <script src="https://unpkg.com/leaflet.markercluster@latest/dist/leaflet.markercluster.js"></script>
     <script>
         const map = L.map('map').setView([36.12, -115.1574], 13);
         let clicked = false
@@ -194,11 +197,13 @@
          attribution:'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         subdomains: 'abcd',
         minZoom: 12,
-        maxZoom: 18,
+        maxZoom: 19,
         ext: 'png',
         opacity: 1,
         }).addTo(map);
 
+        const markers = L.markerClusterGroup();
+        
 
         //// create styled layers
         const barsLayer = L.geoJson(bars, {
@@ -232,7 +237,7 @@
                     map.panTo(e.latlng,13)
                 });
             }
-        }).addTo(map);
+        }) //.addTo(map);
         drawMap(barsLayer);
 
         //// fit bounds to include the strip and downtown
@@ -263,8 +268,12 @@
                         className: 'leaflet-popup-content'
                     });
                 }
+
+                markers.addLayer(layer);
             })
             drawLegend(breaks);
+
+            map.addLayer(markers);
         }
 
         //// define 3-class ckmeans classification
