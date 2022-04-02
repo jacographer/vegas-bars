@@ -202,7 +202,7 @@
         opacity: 1,
         }).addTo(map);
 
-        const markers = L.markerClusterGroup();
+        // const markers = L.markerClusterGroup();
         
 
         //// create styled layers
@@ -237,7 +237,7 @@
                     map.panTo(e.latlng,13)
                 });
             }
-        }) //.addTo(map);
+        }) .addTo(map);
         drawMap(barsLayer);
 
         //// fit bounds to include the strip and downtown
@@ -268,12 +268,11 @@
                         className: 'leaflet-popup-content'
                     });
                 }
-
-                markers.addLayer(layer);
+                // markers.addLayer(layer);
             })
             drawLegend(breaks);
 
-            map.addLayer(markers);
+            // map.addLayer(markers);
         }
 
         //// define 3-class ckmeans classification

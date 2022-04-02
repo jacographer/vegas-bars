@@ -1,6 +1,6 @@
 {
     "title": "Questionable Cocktails",
-    "info": "Las Vegas area bars displayed by number of demerits on their most recent health inspection. Data includes locations classified as a 'Bar / Tavern' in the City of Las Vegas'Restaurant Inspection Open Dataset, updated on 17 Mar. 2022",
+    "info": "Las Vegas area bars displayed by number of demerits on their most recent health inspection. Data includes locations classified as a 'Bar / Tavern' in the City of Las Vegas' Restaurant Inspection Open Dataset, updated on 17 Mar. 2022",
     "coordinates": [36.12, -115.15],
     "author": "Jacob Saindon",
     "link": "https://jacographer.com/vegas-bars/"
